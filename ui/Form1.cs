@@ -91,11 +91,11 @@ namespace ui {
         /// 设置ComboBox数据的属性类型
         /// </summary>
         private void ComboBoxTypeTagInit() {
-            ContactMaterialComboBox.Tag = ColType.ContactMaterial;
-            InterfacialMaterialComboBox.Tag = ColType.InterfacialMaterial;
-            RoughnessComboBox.Tag = ColType.Roughness;
-            ContactPressComboBox.Tag = ColType.ContactPress;
-            AtmPressComboBox.Tag = ColType.AtmPress;
+            ContactMaterialComboBox.Tag = PropertyType.ContactMaterial;
+            InterfacialMaterialComboBox.Tag = PropertyType.InterfacialMaterial;
+            RoughnessComboBox.Tag = PropertyType.Roughness;
+            ContactPressComboBox.Tag = PropertyType.ContactPress;
+            AtmPressComboBox.Tag = PropertyType.AtmPress;
         }
 
         /// <summary>
@@ -115,7 +115,7 @@ namespace ui {
         /// <param name="comboBox">combox</param>
         private void ComboBoxItemsInit(ComboBox comboBox) {
             comboBox.Items.Clear();
-            ColType type = (ColType)comboBox.Tag;
+            PropertyType type = (PropertyType)comboBox.Tag;
             comboBox.Items.AddRange(SearchData.GetSelectItems(Constant.DATABASE_COL_NAME[type]).ToArray());
             if (comboBox.Items.Count > 0) {
                 comboBox.SelectedIndex = 0;

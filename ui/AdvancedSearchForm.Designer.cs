@@ -180,7 +180,7 @@
             ContactMaterialCheckBox.Size = new Size(15, 14);
             ContactMaterialCheckBox.TabIndex = 26;
             ContactMaterialCheckBox.UseVisualStyleBackColor = true;
-            ContactMaterialCheckBox.CheckedChanged += ContactMaterialCheckBox_CheckedChanged;
+            ContactMaterialCheckBox.CheckedChanged += CheckBox_CheckedChanged;
             // 
             // InterfacialMaterialCheckBox
             // 
@@ -192,7 +192,7 @@
             InterfacialMaterialCheckBox.Size = new Size(15, 14);
             InterfacialMaterialCheckBox.TabIndex = 27;
             InterfacialMaterialCheckBox.UseVisualStyleBackColor = true;
-            InterfacialMaterialCheckBox.CheckedChanged += InterfacialMaterialCheckBox_CheckedChanged;
+            InterfacialMaterialCheckBox.CheckedChanged += CheckBox_CheckedChanged;
             // 
             // RoughnessCheckBox
             // 
@@ -204,7 +204,7 @@
             RoughnessCheckBox.Size = new Size(15, 14);
             RoughnessCheckBox.TabIndex = 28;
             RoughnessCheckBox.UseVisualStyleBackColor = true;
-            RoughnessCheckBox.CheckedChanged += RoughnessCheckBox_CheckedChanged;
+            RoughnessCheckBox.CheckedChanged += CheckBox_CheckedChanged;
             // 
             // ContactPressCheckBox
             // 
@@ -216,7 +216,7 @@
             ContactPressCheckBox.Size = new Size(15, 14);
             ContactPressCheckBox.TabIndex = 29;
             ContactPressCheckBox.UseVisualStyleBackColor = true;
-            ContactPressCheckBox.CheckedChanged += ContactPressCheckBox_CheckedChanged;
+            ContactPressCheckBox.CheckedChanged += CheckBox_CheckedChanged;
             // 
             // AtmPressCheckBox
             // 
@@ -228,7 +228,7 @@
             AtmPressCheckBox.Size = new Size(15, 14);
             AtmPressCheckBox.TabIndex = 30;
             AtmPressCheckBox.UseVisualStyleBackColor = true;
-            AtmPressCheckBox.CheckedChanged += AtmPressCheckBox_CheckedChanged;
+            AtmPressCheckBox.CheckedChanged += CheckBox_CheckedChanged;
             // 
             // AtmPressUbTextBox
             // 
@@ -330,7 +330,8 @@
             // MobileNoteLabel
             // 
             MobileNoteLabel.AutoSize = true;
-            MobileNoteLabel.ForeColor = Color.Red;
+            MobileNoteLabel.BackColor = SystemColors.Info;
+            MobileNoteLabel.ForeColor = Color.Black;
             MobileNoteLabel.Location = new Point(110, 297);
             MobileNoteLabel.Name = "MobileNoteLabel";
             MobileNoteLabel.Size = new Size(0, 17);

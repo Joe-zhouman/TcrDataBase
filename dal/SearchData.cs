@@ -32,7 +32,7 @@ namespace dal {
 
         public static bool CommonSearch(ref Contact contact) {
             DbAccess db = new DbAccess(DefaultDb);
-            var reader = db.SelectWhere(testTableName, "tcr", contact.ToSqlSearchQuery());
+            var reader = db.SelectWhere(testTableName, Constant.DATABASE_COL_NAME[PropertyType.TCR], contact.ToSqlSearchQuery());
             if (reader == null || !reader.HasRows) {
                 return false;
             }
@@ -46,11 +46,11 @@ namespace dal {
         public static void AdvancedSearch(ref SearchModel model) {
             List<StringBuilder> conds = new List<StringBuilder>();
             if (model == null) { return; }
-            AppendMultiSearchCond("contact_material", model.ContactMaterials, ref conds);
-            AppendMultiSearchCond("interfacial_material", model.InterfacialMaterials, ref conds);
-            AppendSearchLimCond("roughness", model.RoughnessLb, model.RoughnessUb, ref conds);
-            AppendSearchLimCond("contact_press", model.ContactPressLb, model.ContactPressUb, ref conds);
-            AppendSearchLimCond("atm_press", model.AtmPressLb, model.AtmPressUb, ref conds);
+            AppendMultiSearchCond(Constant.DATABASE_COL_NAME[PropertyType.ContactMaterial], model.ContactMaterials, ref conds);
+            AppendMultiSearchCond(Constant.DATABASE_COL_NAME[PropertyType.InterfacialMaterial], model.InterfacialMaterials, ref conds);
+            AppendSearchLimCond(Constant.DATABASE_COL_NAME[PropertyType.Roughness], model.RoughnessLb, model.RoughnessUb, ref conds);
+            AppendSearchLimCond(Constant.DATABASE_COL_NAME[PropertyType.ContactPress], model.ContactPressLb, model.ContactPressUb, ref conds);
+            AppendSearchLimCond(Constant.DATABASE_COL_NAME[PropertyType.AtmPress], model.AtmPressLb, model.AtmPressUb, ref conds);
             if (conds.Count == 0) { model.SearchResult = null; return; }
             string operation = string.Join("AND ", conds);
             DbAccess db = new DbAccess(DefaultDb);
@@ -67,12 +67,12 @@ namespace dal {
         }
 
         private static void GetContactFromReader(SqliteDataReader reader, Contact contact) {
-            contact.ContactMaterial = reader["contact_material"] as string ?? string.Empty;
-            contact.InterfacialMaterial = reader["interfacial_material"] as string ?? string.Empty;
-            contact.Roughness = reader.GetDouble(reader.GetOrdinal("roughness"));
-            contact.ContactPress = reader.GetDouble(reader.GetOrdinal("contact_press"));
-            contact.AtmPress = reader.GetDouble(reader.GetOrdinal("atm_press"));
-            contact.TCR = reader.GetDouble(reader.GetOrdinal("tcr"));
+            contact.ContactMaterial = reader[Constant.DATABASE_COL_NAME[PropertyType.ContactMaterial]] as string ?? string.Empty;
+            contact.InterfacialMaterial = reader[Constant.DATABASE_COL_NAME[PropertyType.InterfacialMaterial]] as string ?? string.Empty;
+            contact.Roughness = reader.GetDouble(reader.GetOrdinal(Constant.DATABASE_COL_NAME[PropertyType.Roughness]));
+            contact.ContactPress = reader.GetDouble(reader.GetOrdinal(Constant.DATABASE_COL_NAME[PropertyType.ContactPress]));
+            contact.AtmPress = reader.GetDouble(reader.GetOrdinal(Constant.DATABASE_COL_NAME[PropertyType.AtmPress]));
+            contact.TCR = reader.GetDouble(reader.GetOrdinal(Constant.DATABASE_COL_NAME[PropertyType.TCR]));
         }
         private static void GetContactFromReader(IExcelDataReader reader, Contact contact) {
             contact.ContactMaterial = reader.GetValue(0).ToString() ?? string.Empty;
@@ -112,20 +112,27 @@ namespace dal {
             while (reader.Read()) {
                 Contact contact = new Contact();
                 GetContactFromReader(reader, contact);
-                var sqlReader = db.SelectWhere(testTableName, "tcr", contact.ToSqlSearchQuery());
+                var sqlReader = db.SelectWhere(testTableName, Constant.DATABASE_COL_NAME[PropertyType.TCR], contact.ToSqlSearchQuery());
                 if (sqlReader != null && sqlReader.HasRows) {
                     sqlReader.Read();
                     var id = sqlReader.GetInt32(0);
                     string updateQuery = $@"UPDATE {testTableName}
-SET tcr={contact.TCR}
-WHERE id={id}";
+SET {Constant.DATABASE_COL_NAME[PropertyType.TCR]}={contact.TCR}
+WHERE {Constant.DATABASE_COL_NAME[PropertyType.ID]}={id}";
                     db.ExecuteQuery(updateQuery);
                 }
                 else {
-                    string insertQuery = $@"INSERT INTO
-{testTableName}(contact_material,interfacial_material,roughness,contact_press,atm_press,tcr)
-VALUES('{contact.ContactMaterial}','{contact.InterfacialMaterial}',{contact.Roughness},{contact.ContactPress},{contact.AtmPress},{contact.TCR})";
-                    db.ExecuteQuery(insertQuery);
+                    StringBuilder insertQuery = new StringBuilder();
+                    insertQuery.AppendLine("INSERT INTO");
+                    insertQuery.Append(testTableName);
+                    insertQuery.Append('(');
+                    insertQuery.Append(String.Join(',',
+                        Constant.DATABASE_COL_NAME
+                        .Where(pair => pair.Key != PropertyType.ID)
+                        .Select(pair => pair.Value)));
+                    insertQuery.Append(")\n");
+                    insertQuery.AppendLine($"VALUES('{contact.ContactMaterial}','{contact.InterfacialMaterial}',{contact.Roughness},{contact.ContactPress},{contact.AtmPress},{contact.TCR})");
+                    db.ExecuteQuery(insertQuery.ToString());
                 }
             }
             db.CloseSqlConnection();

@@ -5,37 +5,30 @@ namespace ui {
     public partial class AdvancedSearchForm : Form {
         private MainForm _parent;
         private List<Contact> _contacts = new List<Contact>();
-        private readonly string _noteString = "请使用','分隔不同的搜索项";
+        private readonly string _noteString = "*请使用','分隔不同的搜索项";
         public AdvancedSearchForm(MainForm parent) {
             InitializeComponent();
             _parent = parent;
         }
-        private void CheckedChanged(CheckBox checkBox, List<TextBox> textBoxes) {
+        private void ControlTagInit() {
+            ContactMaterialCheckBox.Tag = new List<TextBox> { ContactMaterialTextBox };
+            InterfacialMaterialCheckBox.Tag = new List<TextBox> { InterfacialMaterialTextBox };
+            RoughnessCheckBox.Tag = new List<TextBox> { RoughnessLbTextBox, RoughnessUbTextBox };
+            ContactPressCheckBox.Tag = new List<TextBox> { ContactPressLbTextBox, ContactPressUbTextBox };
+            AtmPressCheckBox.Tag = new List<TextBox> { AtmPressLbTextBox, AtmPressUbTextBox };
+        }
+        private void CheckBox_CheckedChanged(object sender, EventArgs e) {
+            var checkBox = sender as CheckBox;
+            if (checkBox is null) return;
+            var textBoxes = checkBox.Tag as List<TextBox>;
+            if (textBoxes is null) return;
             foreach (TextBox textBox in textBoxes) {
                 textBox.Enabled = checkBox.Checked;
             }
         }
-        private void ContactMaterialCheckBox_CheckedChanged(object sender, EventArgs e) {
-            CheckedChanged(sender as CheckBox, new List<TextBox> { ContactMaterialTextBox });
-        }
-
-        private void InterfacialMaterialCheckBox_CheckedChanged(object sender, EventArgs e) {
-            CheckedChanged(sender as CheckBox, new List<TextBox> { InterfacialMaterialTextBox });
-        }
-
-        private void RoughnessCheckBox_CheckedChanged(object sender, EventArgs e) {
-            CheckedChanged(sender as CheckBox, new List<TextBox> { RoughnessLbTextBox, RoughnessUbTextBox });
-        }
-
-        private void ContactPressCheckBox_CheckedChanged(object sender, EventArgs e) {
-            CheckedChanged(sender as CheckBox, new List<TextBox> { ContactPressLbTextBox, ContactPressUbTextBox });
-        }
-
-        private void AtmPressCheckBox_CheckedChanged(object sender, EventArgs e) {
-            CheckedChanged(sender as CheckBox, new List<TextBox> { AtmPressLbTextBox, AtmPressUbTextBox });
-        }
 
         private void AdvancedSearchForm_Load(object sender, EventArgs e) {
+            ControlTagInit();
             foreach (var con in this.Controls) {
                 if (con is CheckBox) {
                     CheckBox checkbox = (CheckBox)con;
