@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>接触热阻查询系统</AssemblyName>
+    <ApplicationIcon>www.alltoall.net_数据查询数据库查询_yLBia_o56z.ico</ApplicationIcon>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="www.alltoall.net_数据查询数据库查询_yLBia_o56z.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\dal\dal.csproj" />
+    <ProjectReference Include="..\model\model.csproj" />
+  </ItemGroup>
+
+</Project>
