@@ -9,5 +9,13 @@
             {PropertyType.TCR,"tcr" },
             {PropertyType.ID,"id"},
         };
+        public static readonly Dictionary<PropertyType, int> IMPORT_FILE_COL_INDEX = new() {
+            {PropertyType.ContactMaterial,0},
+            {PropertyType.InterfacialMaterial,1},
+            {PropertyType.Roughness,2},
+            {PropertyType.ContactPress,3},
+            {PropertyType.AtmPress,4},
+            {PropertyType.TCR,5},
+        };
     }
 }

@@ -23,9 +23,9 @@
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent() {
-            AtmPressUnitLabel = new Label();
-            ContactPressUnitLabel = new Label();
-            RoughnessUnitLabel = new Label();
+            AtmPressLbUnitLabel = new Label();
+            ContactPressLbUnitLabel = new Label();
+            RoughnessLbUnitLabel = new Label();
             AtmPressLabel = new Label();
             ContactPressLabel = new Label();
             RoughnessLabel = new Label();
@@ -44,12 +44,12 @@
             AtmPressUbTextBox = new TextBox();
             RoughnessUbTextBox = new TextBox();
             ContactPressUbTextBox = new TextBox();
-            label1 = new Label();
-            label2 = new Label();
-            label3 = new Label();
-            TillLabel = new Label();
-            label4 = new Label();
-            label5 = new Label();
+            AtmPressUbUnitLabel = new Label();
+            ContactPressUbUnitLabel = new Label();
+            RoughnessUbUnitLabel = new Label();
+            RoughnessTillLabel = new Label();
+            ContactPressTillLabel = new Label();
+            AtmPressTillLabel = new Label();
             label6 = new Label();
             label7 = new Label();
             MobileNoteLabel = new Label();
@@ -59,32 +59,32 @@
             ((System.ComponentModel.ISupportInitialize)SearchResultDataGridView).BeginInit();
             SuspendLayout();
             // 
-            // AtmPressUnitLabel
+            // AtmPressLbUnitLabel
             // 
-            AtmPressUnitLabel.AutoSize = true;
-            AtmPressUnitLabel.Location = new Point(213, 235);
-            AtmPressUnitLabel.Name = "AtmPressUnitLabel";
-            AtmPressUnitLabel.Size = new Size(22, 17);
-            AtmPressUnitLabel.TabIndex = 20;
-            AtmPressUnitLabel.Text = "Pa";
+            AtmPressLbUnitLabel.AutoSize = true;
+            AtmPressLbUnitLabel.Location = new Point(213, 235);
+            AtmPressLbUnitLabel.Name = "AtmPressLbUnitLabel";
+            AtmPressLbUnitLabel.Size = new Size(22, 17);
+            AtmPressLbUnitLabel.TabIndex = 20;
+            AtmPressLbUnitLabel.Text = "Pa";
             // 
-            // ContactPressUnitLabel
+            // ContactPressLbUnitLabel
             // 
-            ContactPressUnitLabel.AutoSize = true;
-            ContactPressUnitLabel.Location = new Point(213, 188);
-            ContactPressUnitLabel.Name = "ContactPressUnitLabel";
-            ContactPressUnitLabel.Size = new Size(34, 17);
-            ContactPressUnitLabel.TabIndex = 19;
-            ContactPressUnitLabel.Text = "MPa";
+            ContactPressLbUnitLabel.AutoSize = true;
+            ContactPressLbUnitLabel.Location = new Point(213, 188);
+            ContactPressLbUnitLabel.Name = "ContactPressLbUnitLabel";
+            ContactPressLbUnitLabel.Size = new Size(34, 17);
+            ContactPressLbUnitLabel.TabIndex = 19;
+            ContactPressLbUnitLabel.Text = "MPa";
             // 
-            // RoughnessUnitLabel
+            // RoughnessLbUnitLabel
             // 
-            RoughnessUnitLabel.AutoSize = true;
-            RoughnessUnitLabel.Location = new Point(213, 142);
-            RoughnessUnitLabel.Name = "RoughnessUnitLabel";
-            RoughnessUnitLabel.Size = new Size(27, 17);
-            RoughnessUnitLabel.TabIndex = 18;
-            RoughnessUnitLabel.Text = "μm";
+            RoughnessLbUnitLabel.AutoSize = true;
+            RoughnessLbUnitLabel.Location = new Point(213, 142);
+            RoughnessLbUnitLabel.Name = "RoughnessLbUnitLabel";
+            RoughnessLbUnitLabel.Size = new Size(27, 17);
+            RoughnessLbUnitLabel.TabIndex = 18;
+            RoughnessLbUnitLabel.Text = "μm";
             // 
             // AtmPressLabel
             // 
@@ -251,59 +251,59 @@
             ContactPressUbTextBox.Size = new Size(100, 23);
             ContactPressUbTextBox.TabIndex = 34;
             // 
-            // label1
+            // AtmPressUbUnitLabel
             // 
-            label1.AutoSize = true;
-            label1.Location = new Point(388, 235);
-            label1.Name = "label1";
-            label1.Size = new Size(22, 17);
-            label1.TabIndex = 33;
-            label1.Text = "Pa";
+            AtmPressUbUnitLabel.AutoSize = true;
+            AtmPressUbUnitLabel.Location = new Point(388, 235);
+            AtmPressUbUnitLabel.Name = "AtmPressUbUnitLabel";
+            AtmPressUbUnitLabel.Size = new Size(22, 17);
+            AtmPressUbUnitLabel.TabIndex = 33;
+            AtmPressUbUnitLabel.Text = "Pa";
             // 
-            // label2
+            // ContactPressUbUnitLabel
             // 
-            label2.AutoSize = true;
-            label2.Location = new Point(388, 188);
-            label2.Name = "label2";
-            label2.Size = new Size(34, 17);
-            label2.TabIndex = 32;
-            label2.Text = "MPa";
+            ContactPressUbUnitLabel.AutoSize = true;
+            ContactPressUbUnitLabel.Location = new Point(388, 188);
+            ContactPressUbUnitLabel.Name = "ContactPressUbUnitLabel";
+            ContactPressUbUnitLabel.Size = new Size(34, 17);
+            ContactPressUbUnitLabel.TabIndex = 32;
+            ContactPressUbUnitLabel.Text = "MPa";
             // 
-            // label3
+            // RoughnessUbUnitLabel
             // 
-            label3.AutoSize = true;
-            label3.Location = new Point(388, 142);
-            label3.Name = "label3";
-            label3.Size = new Size(27, 17);
-            label3.TabIndex = 31;
-            label3.Text = "μm";
+            RoughnessUbUnitLabel.AutoSize = true;
+            RoughnessUbUnitLabel.Location = new Point(388, 142);
+            RoughnessUbUnitLabel.Name = "RoughnessUbUnitLabel";
+            RoughnessUbUnitLabel.Size = new Size(27, 17);
+            RoughnessUbUnitLabel.TabIndex = 31;
+            RoughnessUbUnitLabel.Text = "μm";
             // 
-            // TillLabel
+            // RoughnessTillLabel
             // 
-            TillLabel.AutoSize = true;
-            TillLabel.Location = new Point(248, 143);
-            TillLabel.Name = "TillLabel";
-            TillLabel.Size = new Size(20, 17);
-            TillLabel.TabIndex = 37;
-            TillLabel.Text = "至";
+            RoughnessTillLabel.AutoSize = true;
+            RoughnessTillLabel.Location = new Point(248, 143);
+            RoughnessTillLabel.Name = "RoughnessTillLabel";
+            RoughnessTillLabel.Size = new Size(20, 17);
+            RoughnessTillLabel.TabIndex = 37;
+            RoughnessTillLabel.Text = "至";
             // 
-            // label4
+            // ContactPressTillLabel
             // 
-            label4.AutoSize = true;
-            label4.Location = new Point(248, 188);
-            label4.Name = "label4";
-            label4.Size = new Size(20, 17);
-            label4.TabIndex = 38;
-            label4.Text = "至";
+            ContactPressTillLabel.AutoSize = true;
+            ContactPressTillLabel.Location = new Point(248, 188);
+            ContactPressTillLabel.Name = "ContactPressTillLabel";
+            ContactPressTillLabel.Size = new Size(20, 17);
+            ContactPressTillLabel.TabIndex = 38;
+            ContactPressTillLabel.Text = "至";
             // 
-            // label5
+            // AtmPressTillLabel
             // 
-            label5.AutoSize = true;
-            label5.Location = new Point(248, 236);
-            label5.Name = "label5";
-            label5.Size = new Size(20, 17);
-            label5.TabIndex = 39;
-            label5.Text = "至";
+            AtmPressTillLabel.AutoSize = true;
+            AtmPressTillLabel.Location = new Point(248, 236);
+            AtmPressTillLabel.Name = "AtmPressTillLabel";
+            AtmPressTillLabel.Size = new Size(20, 17);
+            AtmPressTillLabel.TabIndex = 39;
+            AtmPressTillLabel.Text = "至";
             // 
             // label6
             // 
@@ -350,7 +350,7 @@
             // SearchResultDataGridView
             // 
             SearchResultDataGridView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            SearchResultDataGridView.Location = new Point(462, 27);
+            SearchResultDataGridView.Location = new Point(12, 317);
             SearchResultDataGridView.Name = "SearchResultDataGridView";
             SearchResultDataGridView.RowTemplate.Height = 25;
             SearchResultDataGridView.Size = new Size(540, 269);
@@ -370,22 +370,22 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 17F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1024, 323);
+            ClientSize = new Size(577, 592);
             Controls.Add(AppendSearchResultButton);
             Controls.Add(SearchResultDataGridView);
             Controls.Add(AdvancedSearchButton);
             Controls.Add(MobileNoteLabel);
             Controls.Add(label7);
             Controls.Add(label6);
-            Controls.Add(label5);
-            Controls.Add(label4);
-            Controls.Add(TillLabel);
+            Controls.Add(AtmPressTillLabel);
+            Controls.Add(ContactPressTillLabel);
+            Controls.Add(RoughnessTillLabel);
             Controls.Add(AtmPressUbTextBox);
             Controls.Add(RoughnessUbTextBox);
             Controls.Add(ContactPressUbTextBox);
-            Controls.Add(label1);
-            Controls.Add(label2);
-            Controls.Add(label3);
+            Controls.Add(AtmPressUbUnitLabel);
+            Controls.Add(ContactPressUbUnitLabel);
+            Controls.Add(RoughnessUbUnitLabel);
             Controls.Add(AtmPressCheckBox);
             Controls.Add(ContactPressCheckBox);
             Controls.Add(RoughnessCheckBox);
@@ -396,16 +396,16 @@
             Controls.Add(InterfacialMaterialTextBox);
             Controls.Add(RoughnessLbTextBox);
             Controls.Add(ContactPressLbTextBox);
-            Controls.Add(AtmPressUnitLabel);
-            Controls.Add(ContactPressUnitLabel);
-            Controls.Add(RoughnessUnitLabel);
+            Controls.Add(AtmPressLbUnitLabel);
+            Controls.Add(ContactPressLbUnitLabel);
+            Controls.Add(RoughnessLbUnitLabel);
             Controls.Add(AtmPressLabel);
             Controls.Add(ContactPressLabel);
             Controls.Add(RoughnessLabel);
             Controls.Add(InterfacialMaterialLabel);
             Controls.Add(ContactMaterialLabel);
             Name = "AdvancedSearchForm";
-            Text = "AdvancedSearchForm";
+            Text = "高级查询";
             Load += AdvancedSearchForm_Load;
             ((System.ComponentModel.ISupportInitialize)SearchResultDataGridView).EndInit();
             ResumeLayout(false);
@@ -414,9 +414,9 @@
 
         #endregion
 
-        private Label AtmPressUnitLabel;
-        private Label ContactPressUnitLabel;
-        private Label RoughnessUnitLabel;
+        private Label AtmPressLbUnitLabel;
+        private Label ContactPressLbUnitLabel;
+        private Label RoughnessLbUnitLabel;
         private Label AtmPressLabel;
         private Label ContactPressLabel;
         private Label RoughnessLabel;
@@ -435,12 +435,12 @@
         private TextBox AtmPressUbTextBox;
         private TextBox RoughnessUbTextBox;
         private TextBox ContactPressUbTextBox;
-        private Label label1;
-        private Label label2;
-        private Label label3;
-        private Label TillLabel;
-        private Label label4;
-        private Label label5;
+        private Label AtmPressUbUnitLabel;
+        private Label ContactPressUbUnitLabel;
+        private Label RoughnessUbUnitLabel;
+        private Label RoughnessTillLabel;
+        private Label ContactPressTillLabel;
+        private Label AtmPressTillLabel;
         private Label label6;
         private Label label7;
         private Label MobileNoteLabel;

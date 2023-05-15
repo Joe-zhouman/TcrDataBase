@@ -5,7 +5,7 @@ namespace ui {
     public partial class AdvancedSearchForm : Form {
         private MainForm _parent;
         private List<Contact> _contacts = new List<Contact>();
-        private readonly string _noteString = "*请使用','分隔不同的搜索项";
+        private readonly string _STARED_TEXTBOX_NOTE_STRING = "*请使用','分隔不同的搜索项";
         public AdvancedSearchForm(MainForm parent) {
             InitializeComponent();
             _parent = parent;
@@ -50,7 +50,7 @@ namespace ui {
             var textBox = sender as TextBox;
             if (textBox is null) return;
             if (!textBox.Enabled) return;
-            MobileNoteLabel.Text = _noteString;
+            MobileNoteLabel.Text = _STARED_TEXTBOX_NOTE_STRING;
             Point position = textBox.Location;
             //position.X += (int)(MobileNoteLabel.Height * 1.2);
             position.Y += (int)(MobileNoteLabel.Height * 1.5);
