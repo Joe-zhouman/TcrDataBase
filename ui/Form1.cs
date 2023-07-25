@@ -25,13 +25,14 @@ namespace ui {
         }
 
         private void AppendButton_Click(object sender, EventArgs e) {
-            if (_currentContact.TCR == 0) return;
+            if(_currentContact.TCR == 0)
+                return;
             AppendCurentContactToTable();
         }
 
         private void SearchButton_Click(object sender, EventArgs e) {
             GetCurrentContact();
-            if (SearchData.CommonSearch(ref _currentContact)) {
+            if(SearchData.CommonSearch(ref _currentContact)) {
                 TcrTextBox.Text = _currentContact.TCR.ToString("N3");
                 return;
             }
@@ -42,7 +43,7 @@ namespace ui {
 
         private void ExportTUIButton_Click(object sender, EventArgs e) {
             GetExportLines();
-            if (_exportLinesIndex.Count == 0) {
+            if(_exportLinesIndex.Count == 0) {
                 MessageBox.Show($@"没有数据需要导出", @"警告", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
             else {
@@ -54,7 +55,7 @@ namespace ui {
 
         private void ExportUddButton_Click(object sender, EventArgs e) {
             GetExportLines();
-            if (_exportLinesIndex.Count == 0) {
+            if(_exportLinesIndex.Count == 0) {
                 MessageBox.Show($@"没有数据需要导出", @"警告", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
             else {
@@ -65,7 +66,7 @@ namespace ui {
                 saveFileDialog.FileName = "tcr.scm";
                 //显示对话框
                 string fileName;
-                if (saveFileDialog.ShowDialog() == DialogResult.OK) {
+                if(saveFileDialog.ShowDialog() == DialogResult.OK) {
                     //获取选择的文件名
                     fileName = saveFileDialog.FileName;
                     //在文本框中显示文件名
@@ -92,9 +93,13 @@ namespace ui {
         /// </summary>
         private void ComboBoxTypeTagInit() {
             ContactMaterialComboBox.Tag = PropertyType.ContactMaterial;
+            ContactMaterial2ComboBox.Tag = PropertyType.ContactMaterial2;
             InterfacialMaterialComboBox.Tag = PropertyType.InterfacialMaterial;
-            RoughnessComboBox.Tag = PropertyType.Roughness;
+            GasConditionComboBox.Tag = PropertyType.GasCondition;
+            RoughnessLbComboBox.Tag = PropertyType.RoughnessLb;
+            RoughnessUbComboBox.Tag = PropertyType.RoughnessUb;
             ContactPressComboBox.Tag = PropertyType.ContactPress;
+            InterfacialTempComboBox.Tag = PropertyType.InterfacialTemp;
             AtmPressComboBox.Tag = PropertyType.AtmPress;
         }
 
@@ -102,9 +107,9 @@ namespace ui {
         /// 初始化所有ComboBox的Items列表
         /// </summary>
         private void ComboBoxItemsInit() {
-            foreach (var control in this.PropertyGroupBox.Controls) {
+            foreach(var control in this.PropertyGroupBox.Controls) {
                 var box = control as ComboBox;
-                if (box is null) { continue; }
+                if(box is null) { continue; }
                 ComboBoxItemsInit(box);
             }
         }
@@ -117,7 +122,7 @@ namespace ui {
             comboBox.Items.Clear();
             PropertyType type = (PropertyType)comboBox.Tag;
             comboBox.Items.AddRange(SearchData.GetSelectItems(Constant.DATABASE_COL_NAME[type]).ToArray());
-            if (comboBox.Items.Count > 0) {
+            if(comboBox.Items.Count > 0) {
                 comboBox.SelectedIndex = 0;
             }
         }
@@ -126,14 +131,20 @@ namespace ui {
             _currentContact = new Contact();
             _currentContact.ContactPress = Double.Parse(ContactPressComboBox.Text);
             _currentContact.AtmPress = Double.Parse(AtmPressComboBox.Text);
-            _currentContact.Roughness = Double.Parse(RoughnessComboBox.Text);
+            _currentContact.RoughnessLb = Double.Parse(RoughnessLbComboBox.Text);
+            _currentContact.RoughnessUb = Double.Parse(RoughnessUbComboBox.Text);
+            _currentContact.InterfacialTemp = Double.Parse(InterfacialTempComboBox.Text);
             _currentContact.InterfacialMaterial = InterfacialMaterialComboBox.Text;
-            _currentContact.ContactMaterial = ContactMaterialComboBox.Text;
+            _currentContact.GasCondtion = GasConditionComboBox.Text;
+            string[] contactMaterialStr = { ContactMaterialComboBox.Text, ContactMaterial2ComboBox.Text };
+            Array.Sort(contactMaterialStr);
+            _currentContact.ContactMaterial = contactMaterialStr[0];
+            _currentContact.ContactMaterial2 = contactMaterialStr[1];
         }
 
         private void AllComboBoxInit() {
-            foreach (Control control in this.PropertyGroupBox.Controls) {
-                if (control is ComboBox) {
+            foreach(Control control in this.PropertyGroupBox.Controls) {
+                if(control is ComboBox) {
                     ComboBox comboBox = (ComboBox)control;
                     comboBox.SelectedIndex = 0;
                 }
@@ -151,10 +162,13 @@ namespace ui {
                 "",
                 contact.TCR,
                 contact.ContactMaterial,
+                contact.ContactMaterial2,
                 contact.InterfacialMaterial == "无" ? "none" : contact.InterfacialMaterial,
-                contact.Roughness,
+                $"{contact.RoughnessLb}~{contact.RoughnessUb}",
                 contact.ContactPress,
-                contact.AtmPress
+                contact.AtmPress,
+                contact.GasCondtion,
+                contact.InterfacialTemp
                 );
         }
 
@@ -169,39 +183,48 @@ namespace ui {
             SearchResultDataGridview.Columns.Add(isExport);
             SearchResultDataGridview.Columns.Add("name", "导出名称");
             SearchResultDataGridview.Columns.Add("tcr", "接触热阻");
-            SearchResultDataGridview.Columns.Add("contactMaterial", "材料");
+            SearchResultDataGridview.Columns.Add("contactMaterial1", "材料1");
+            SearchResultDataGridview.Columns.Add("contactMaterial2", "材料2");
             SearchResultDataGridview.Columns.Add("interfacialMaterial", "界面填充");
             SearchResultDataGridview.Columns.Add("roughness", "粗糙度");
             SearchResultDataGridview.Columns.Add("contactPress", "界面压力");
             SearchResultDataGridview.Columns.Add("atmPress", "气体压力");
+            SearchResultDataGridview.Columns.Add("gasCondition", "气体环境");
+            SearchResultDataGridview.Columns.Add("interfacialTemp", "界面温度");
 
             SearchResultDataGridview.Columns["serial"].Width = 60;
             SearchResultDataGridview.Columns["name"].Width = 100;
             SearchResultDataGridview.Columns["tcr"].Width = 100;
-            SearchResultDataGridview.Columns["contactMaterial"].Width = 100;
+            SearchResultDataGridview.Columns["contactMaterial1"].Width = 100;
+            SearchResultDataGridview.Columns["contactMaterial2"].Width = 100;
             SearchResultDataGridview.Columns["interfacialMaterial"].Width = 100;
-            SearchResultDataGridview.Columns["roughness"].Width = 100;
+            SearchResultDataGridview.Columns["roughness"].Width = 120;
             SearchResultDataGridview.Columns["contactPress"].Width = 100;
             SearchResultDataGridview.Columns["atmPress"].Width = 100;
+            SearchResultDataGridview.Columns["gasCondition"].Width = 100;
+            SearchResultDataGridview.Columns["interfacialTemp"].Width = 100;
 
             SearchResultDataGridview.Rows.Add(
                 "",
                 true,
                 "",
                 "mm2K/W",
-                _currentContact.ContactMaterial,
-                _currentContact.InterfacialMaterial,
+                "",
+                "",
+                "",
                 "μm",
                 "Mpa",
-                "Pa"
+                "Pa",
+                "",
+                "℃"
                 );
         }
         /// <summary>
         /// 获取需要被输出的行号
         /// </summary>
         private void GetExportLines() {
-            for (int i = 1 + _TABLE_SELECT_ALL_CHECK_BOX_ROW_INDEX; i < SearchResultDataGridview.Rows.Count; i++) {
-                if (Convert.ToBoolean(SearchResultDataGridview.Rows[i].Cells["Export"].Value)) {
+            for(int i = 1 + _TABLE_SELECT_ALL_CHECK_BOX_ROW_INDEX; i < SearchResultDataGridview.Rows.Count; i++) {
+                if(Convert.ToBoolean(SearchResultDataGridview.Rows[i].Cells["Export"].Value)) {
                     _exportLinesIndex.Add(i);
                 }
             }
@@ -212,7 +235,7 @@ namespace ui {
         /// <returns>fluent TUI命令字符串</returns>
         private string GetFluentTuiStr() {
             StringBuilder tui = new StringBuilder();
-            foreach (var index in _exportLinesIndex) {
+            foreach(var index in _exportLinesIndex) {
                 DataGridViewRow row = SearchResultDataGridview.Rows[index];
                 tui.AppendLine($"/define/materials/change-create aluminum {GetMatName(row)} yes const 1 yes constant 0 yes constant {GetEquivalentThermalConductivity((double)row.Cells["tcr"].Value)} no");
             }
@@ -231,8 +254,8 @@ namespace ui {
         /// <returns></returns>
         private string GetMatName(DataGridViewRow row) {
             string name;
-            if (row.Cells["name"].Value is null || row.Cells["name"].Value.ToString() == "") {
-                name = $"{row.Cells["contactMaterial"].Value}-{row.Cells["interfacialMaterial"].Value}-{row.Cells["serial"].Value}";
+            if(row.Cells["name"].Value is null || row.Cells["name"].Value.ToString() == "") {
+                name = $"{row.Cells["contactMaterial1"].Value}-{row.Cells["contactMaterial2"].Value}-{row.Cells["interfacialMaterial"].Value}-{row.Cells["serial"].Value}";
             }
             else {
                 name = (string)row.Cells["name"].Value;
@@ -258,7 +281,7 @@ namespace ui {
 
 ");
                 uddWriter.WriteLine("(");
-                foreach (var index in _exportLinesIndex) {
+                foreach(var index in _exportLinesIndex) {
                     DataGridViewRow row = SearchResultDataGridview.Rows[index];
                     uddWriter.WriteLine($"    ({GetMatName(row)} solid");
                     uddWriter.WriteLine("        (density (constant . 1))");
@@ -269,7 +292,7 @@ namespace ui {
                 }
                 uddWriter.WriteLine(")");
             }
-            catch (Exception) {
+            catch(Exception) {
                 throw;
             }
             finally {
@@ -281,7 +304,7 @@ namespace ui {
             OpenFileDialog ofd = new() {
                 Filter = "Excel文件|*.xlsx"
             };
-            if (ofd.ShowDialog() == DialogResult.OK) {
+            if(ofd.ShowDialog() == DialogResult.OK) {
                 string filename = ofd.FileName;
                 SearchData.ImportDataFromExcel(filename);
                 MessageBox.Show($@"导入完毕", @"提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -290,11 +313,13 @@ namespace ui {
         }
 
         private void SearchResultDataGridview_CellValueChanged(object sender, DataGridViewCellEventArgs e) {
-            if (e.ColumnIndex != _TABLE_CHECK_BOX_COL_INDEX) return;
-            if (e.RowIndex != _TABLE_SELECT_ALL_CHECK_BOX_ROW_INDEX) return;
+            if(e.ColumnIndex != _TABLE_CHECK_BOX_COL_INDEX)
+                return;
+            if(e.RowIndex != _TABLE_SELECT_ALL_CHECK_BOX_ROW_INDEX)
+                return;
             bool selectAllCheckBoxChecked = Convert.ToBoolean(SearchResultDataGridview[_TABLE_CHECK_BOX_COL_INDEX,
                 _TABLE_SELECT_ALL_CHECK_BOX_ROW_INDEX].Value);
-            for (int rowIndex = 1 + _TABLE_SELECT_ALL_CHECK_BOX_ROW_INDEX;
+            for(int rowIndex = 1 + _TABLE_SELECT_ALL_CHECK_BOX_ROW_INDEX;
                 rowIndex < SearchResultDataGridview.RowCount;
                 rowIndex++) {
                 SearchResultDataGridview[e.ColumnIndex, rowIndex].Value = selectAllCheckBoxChecked;
@@ -302,7 +327,7 @@ namespace ui {
         }
 
         private void SearchResultDataGridview_CellMouseUp(object sender, DataGridViewCellMouseEventArgs e) {
-            if (e.ColumnIndex == _TABLE_CHECK_BOX_COL_INDEX && e.RowIndex >= _TABLE_SELECT_ALL_CHECK_BOX_ROW_INDEX) {
+            if(e.ColumnIndex == _TABLE_CHECK_BOX_COL_INDEX && e.RowIndex >= _TABLE_SELECT_ALL_CHECK_BOX_ROW_INDEX) {
                 SearchResultDataGridview.EndEdit();
             }
         }

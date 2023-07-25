@@ -58,7 +58,6 @@ namespace dal.Database {
                 CloseSqlConnection();
                 throw;
             }
-
         }
         /// <summary>
         /// 是否已经创建表

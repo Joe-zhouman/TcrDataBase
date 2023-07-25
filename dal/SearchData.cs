@@ -2,6 +2,7 @@
 using ExcelDataReader;
 using Microsoft.Data.Sqlite;
 using model;
+using System.Reflection.Emit;
 using System.Text;
 
 namespace dal {
@@ -65,9 +66,13 @@ namespace dal {
         /// <returns>sql查询语句的where条件语句字符串</returns>
         private static string ContactToQuery(Contact contact) {
             return $@"{Constant.DATABASE_COL_NAME[PropertyType.ContactMaterial]}='{contact.ContactMaterial}'
+AND {Constant.DATABASE_COL_NAME[PropertyType.ContactMaterial2]}='{contact.ContactMaterial2}'
 AND {Constant.DATABASE_COL_NAME[PropertyType.InterfacialMaterial]}='{contact.InterfacialMaterial}'
-AND {Constant.DATABASE_COL_NAME[PropertyType.Roughness]} BETWEEN {contact.Roughness * .99} AND {contact.Roughness * 1.01}
+AND {Constant.DATABASE_COL_NAME[PropertyType.GasCondition]}='{contact.GasCondtion}'
+AND {Constant.DATABASE_COL_NAME[PropertyType.RoughnessLb]} < {contact.RoughnessLb * 1.01}
+AND {Constant.DATABASE_COL_NAME[PropertyType.RoughnessUb]} > {contact.RoughnessUb * 0.99}
 AND {Constant.DATABASE_COL_NAME[PropertyType.ContactPress]} BETWEEN {contact.ContactPress * .99} AND {contact.ContactPress * 1.01}
+AND {Constant.DATABASE_COL_NAME[PropertyType.InterfacialTemp]} BETWEEN {contact.InterfacialTemp * .99} AND {contact.InterfacialTemp * 1.01}
 AND {Constant.DATABASE_COL_NAME[PropertyType.AtmPress]} BETWEEN {contact.AtmPress * .99} AND {contact.AtmPress * 1.01}";
         }
         /// <summary>
@@ -78,10 +83,13 @@ AND {Constant.DATABASE_COL_NAME[PropertyType.AtmPress]} BETWEEN {contact.AtmPres
             List<StringBuilder> conds = new List<StringBuilder>();
             if (model == null) { return; }
             AppendMultiSearchCond(Constant.DATABASE_COL_NAME[PropertyType.ContactMaterial], model.ContactMaterials, ref conds);
+            AppendMultiSearchCond(Constant.DATABASE_COL_NAME[PropertyType.ContactMaterial2], model.ContactMaterials, ref conds);
             AppendMultiSearchCond(Constant.DATABASE_COL_NAME[PropertyType.InterfacialMaterial], model.InterfacialMaterials, ref conds);
-            AppendSearchLimCond(Constant.DATABASE_COL_NAME[PropertyType.Roughness], model.RoughnessLb, model.RoughnessUb, ref conds);
+            AppendMultiSearchCond(Constant.DATABASE_COL_NAME[PropertyType.GasCondition], model.GasConditions, ref conds);
+            AppendRoughnessCond(model.RoughnessLb, model.RoughnessUb, ref conds);
             AppendSearchLimCond(Constant.DATABASE_COL_NAME[PropertyType.ContactPress], model.ContactPressLb, model.ContactPressUb, ref conds);
             AppendSearchLimCond(Constant.DATABASE_COL_NAME[PropertyType.AtmPress], model.AtmPressLb, model.AtmPressUb, ref conds);
+            AppendSearchLimCond(Constant.DATABASE_COL_NAME[PropertyType.InterfacialTemp], model.InterfacialTempLb, model.InterfacialTempUb, ref conds);
             if (conds.Count == 0) { model.SearchResult = null; return; }
             string operation = string.Join("AND ", conds);
             DbAccess db = new DbAccess(DefaultDb);
@@ -103,10 +111,14 @@ AND {Constant.DATABASE_COL_NAME[PropertyType.AtmPress]} BETWEEN {contact.AtmPres
         /// <param name="contact"></param>
         private static void GetContactFromReader(SqliteDataReader reader, Contact contact) {
             contact.ContactMaterial = reader[Constant.DATABASE_COL_NAME[PropertyType.ContactMaterial]] as string ?? string.Empty;
+            contact.ContactMaterial2 = reader[Constant.DATABASE_COL_NAME[PropertyType.ContactMaterial2]] as string ?? string.Empty;
             contact.InterfacialMaterial = reader[Constant.DATABASE_COL_NAME[PropertyType.InterfacialMaterial]] as string ?? string.Empty;
-            contact.Roughness = reader.GetDouble(reader.GetOrdinal(Constant.DATABASE_COL_NAME[PropertyType.Roughness]));
+            contact.GasCondtion = reader[Constant.DATABASE_COL_NAME[PropertyType.GasCondition]] as string ?? string.Empty;
+            contact.RoughnessLb = reader.GetDouble(reader.GetOrdinal(Constant.DATABASE_COL_NAME[PropertyType.RoughnessLb]));
+            contact.RoughnessUb = reader.GetDouble(reader.GetOrdinal(Constant.DATABASE_COL_NAME[PropertyType.RoughnessUb]));
             contact.ContactPress = reader.GetDouble(reader.GetOrdinal(Constant.DATABASE_COL_NAME[PropertyType.ContactPress]));
             contact.AtmPress = reader.GetDouble(reader.GetOrdinal(Constant.DATABASE_COL_NAME[PropertyType.AtmPress]));
+            contact.InterfacialTemp = reader.GetDouble(reader.GetOrdinal(Constant.DATABASE_COL_NAME[PropertyType.InterfacialTemp]));
             contact.TCR = reader.GetDouble(reader.GetOrdinal(Constant.DATABASE_COL_NAME[PropertyType.TCR]));
         }
         /// <summary>
@@ -115,16 +127,29 @@ AND {Constant.DATABASE_COL_NAME[PropertyType.AtmPress]} BETWEEN {contact.AtmPres
         /// <param name="reader"></param>
         /// <param name="contact"></param>
         private static void GetContactFromReader(IExcelDataReader reader, Contact contact) {
-            contact.ContactMaterial = reader.GetValue(Constant.IMPORT_FILE_COL_INDEX[PropertyType.ContactMaterial]).ToString() ?? string.Empty;
+            string[] contactMaterialStr = { 
+                reader.GetValue(Constant.IMPORT_FILE_COL_INDEX[PropertyType.ContactMaterial]).ToString() ?? string.Empty,
+                reader.GetValue(Constant.IMPORT_FILE_COL_INDEX[PropertyType.ContactMaterial2]).ToString() ?? string.Empty
+            };
+            Array.Sort(contactMaterialStr);
+            contact.ContactMaterial = contactMaterialStr[0];
+            contact.ContactMaterial2 = contactMaterialStr[1];
             contact.InterfacialMaterial = reader.GetValue(Constant.IMPORT_FILE_COL_INDEX[PropertyType.InterfacialMaterial]).ToString() ?? string.Empty;
-            contact.Roughness = reader.GetDouble(Constant.IMPORT_FILE_COL_INDEX[PropertyType.Roughness]);
+            contact.GasCondtion = reader.GetValue(Constant.IMPORT_FILE_COL_INDEX[PropertyType.GasCondition]).ToString() ?? string.Empty;
+            contact.RoughnessLb = reader.GetDouble(Constant.IMPORT_FILE_COL_INDEX[PropertyType.RoughnessLb]);
+            contact.RoughnessUb = reader.GetDouble(Constant.IMPORT_FILE_COL_INDEX[PropertyType.RoughnessUb]);
             contact.ContactPress = reader.GetDouble(Constant.IMPORT_FILE_COL_INDEX[PropertyType.ContactPress]);
             contact.AtmPress = reader.GetDouble(Constant.IMPORT_FILE_COL_INDEX[PropertyType.AtmPress]);
+            contact.InterfacialTemp = reader.GetDouble(Constant.IMPORT_FILE_COL_INDEX[PropertyType.InterfacialTemp]);
             contact.TCR = reader.GetDouble(Constant.IMPORT_FILE_COL_INDEX[PropertyType.TCR]);
         }
         private static void AppendSearchLimCond(string searchItem, double? lb, double? ub, ref List<StringBuilder> conds) {
             if (lb is null || ub is null) { return; }
             conds.Add(new StringBuilder().AppendLine($"{searchItem} BETWEEN {lb} AND {ub}"));
+        }
+        private static void AppendRoughnessCond(double? lb, double? ub, ref List<StringBuilder> conds) {
+            if(lb is null || ub is null) { return; }
+            conds.Add(new StringBuilder().AppendLine($"{Constant.DATABASE_COL_NAME[PropertyType.RoughnessLb]} > {lb} AND {Constant.DATABASE_COL_NAME[PropertyType.RoughnessUb]} < {ub}"));
         }
         /// <summary>
         /// 处理','分隔的多项条件字符串
@@ -180,7 +205,7 @@ WHERE {Constant.DATABASE_COL_NAME[PropertyType.ID]}={id}";
                         .Where(pair => pair.Key != PropertyType.ID)
                         .Select(pair => pair.Value)));
                     insertQuery.Append(")\n");
-                    insertQuery.AppendLine($"VALUES('{contact.ContactMaterial}','{contact.InterfacialMaterial}',{contact.Roughness},{contact.ContactPress},{contact.AtmPress},{contact.TCR})");
+                    insertQuery.AppendLine($"VALUES('{contact.ContactMaterial}','{contact.ContactMaterial2}','{contact.InterfacialMaterial}','{contact.GasCondtion}',{contact.RoughnessLb},{contact.RoughnessUb},{contact.ContactPress},{contact.AtmPress},{contact.InterfacialTemp},{contact.TCR})");
                     db.ExecuteQuery(insertQuery.ToString());
                 }
             }

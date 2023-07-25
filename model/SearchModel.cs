@@ -6,6 +6,9 @@
         public double? ContactPressUb;
         public double? AtmPressLb;
         public double? AtmPressUb;
+        public double? InterfacialTempLb;
+        public double? InterfacialTempUb;
+        public string? GasConditions;
         public string? ContactMaterials;
         public string? InterfacialMaterials;
         public List<Contact>? SearchResult;
